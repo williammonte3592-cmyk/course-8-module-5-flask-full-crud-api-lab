@@ -23,17 +23,16 @@ events = [
 def create_event():
     # TODO: Task 2 - Design and Develop the Code
     data = request.get_json()
-
+    
     # TODO: Task 3 - Implement the Loop and Process Each Element
     if not data or "title" not in data:
-        return jsonify({"error": "Title required"}), 400
-
+        return jsonify({"error": "Title is required"}), 400
+    
     new_id = len(events) + 1
     new_event = Event(new_id, data["title"])
     events.append(new_event)
-
+    
     # TODO: Task 4 - Return and Handle Results
-    pass
     return jsonify(new_event.to_dict()), 201
 
 # TODO: Task 1 - Define the Problem
@@ -42,21 +41,23 @@ def create_event():
 def update_event(event_id):
     # TODO: Task 2 - Design and Develop the Code
     data = request.get_json()
+    
     # TODO: Task 3 - Implement the Loop and Process Each Element
     event = None
     for e in events:
-        if e.id ==event_id:
+        if e.id == event_id:
             event = e
             break
-
+    
     if not event:
-        return jsonify({"error":"Event not found"}), 404
-
+        return jsonify({"error": "Event not found"}), 404
+    
     if not data or "title" not in data:
-        return jsonify({"error":"Title is required"}), 400
-
+        return jsonify({"error": "Title is required"}), 400
+    
+    event.title = data["title"]
+    
     # TODO: Task 4 - Return and Handle Results
-    pass
     return jsonify(event.to_dict()), 200
 
 # TODO: Task 1 - Define the Problem
@@ -64,11 +65,25 @@ def update_event(event_id):
 @app.route("/events/<int:event_id>", methods=["DELETE"])
 def delete_event(event_id):
     # TODO: Task 2 - Design and Develop the Code
-
+    
     # TODO: Task 3 - Implement the Loop and Process Each Element
+    for i, e in enumerate(events):
+        if e.id == event_id:
+            events.pop(i)
+            # TODO: Task 4 - Return and Handle Results
+            return "", 204
+    
+    return jsonify({"error": "Event not found"}), 404
 
-    # TODO: Task 4 - Return and Handle Results
-    pass
+# GET /events - Return all events
+@app.route("/events", methods=["GET"])
+def get_events():
+    return jsonify([event.to_dict() for event in events])
+
+# Welcome route
+@app.route("/")
+def welcome():
+    return jsonify({"message": "Welcome to the Events API"})
 
 if __name__ == "__main__":
     app.run(debug=True)

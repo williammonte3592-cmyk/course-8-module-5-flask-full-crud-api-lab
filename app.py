@@ -22,9 +22,16 @@ events = [
 @app.route("/events", methods=["POST"])
 def create_event():
     # TODO: Task 2 - Design and Develop the Code
+    data = request.get_json()
 
     # TODO: Task 3 - Implement the Loop and Process Each Element
+    if not data or "title" not in data:
+        return jsonify({"error": "Title required"}), 400
 
+    new_id = len(events) + 1
+    new_event = Event(new_id, data["title"])
+    events.append(new_event)
+    
     # TODO: Task 4 - Return and Handle Results
     pass
 
